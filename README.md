@@ -1,4 +1,4 @@
-# joaoinacio/doq
+# joaoinacio/doq ![Build Status](https://travis-ci.org/joaoinacio/doq.svg?branch=master)
 
 Quickly setup and use multiple configurations for containerized services using docker compose.
 
