@@ -20,6 +20,7 @@ class Application extends BaseApp
         $this->add(new Command\StartCommand());
         $this->add(new Command\StopCommand());
         $this->add(new Command\StatusCommand());
+        $this->add(new Command\LogsCommand());
         $this->add(new Command\DestroyCommand());
     }
 }
