@@ -24,19 +24,16 @@ class Command
      * Result output of last compose shell execution
      * @var string
      */
-    protected $lastCommandOutput;
+    protected $lastOutput;
 
+    /**
+     * Set the configuration object for the command to be executed
+     *
+     * @var doq\Compose\Configuration $config
+     */
     public function setConfiguration(Configuration $config)
     {
         $this->config = $config;
-    }
-
-    protected function getDefaultOpts($configName, $composeFile)
-    {
-        $currentDirName = dirname(getcwd());
-        $projectName = sprintf('%s.%s', $currentDirName, $configName);
-
-        return ["--project-name $projectName", "--file $composeFile"];
     }
 
     /**
@@ -49,11 +46,18 @@ class Command
      */
     public function execute($command, $options = [], $args = [])
     {
+        if (!$this->config) {
+            throw new Exception('docker-compose configuration was not provided');
+        }
+
         $tmpConfigFile = $this->config->copyTempFile();
 
         // merge default options for file and project name with provided $options
         $options = array_merge(
-            $this->getDefaultOpts($this->config->getName(), $tmpConfigFile),
+            [
+                '--project-name '. $this->getProjectName($this->config->getName()),
+                '--file ' . $tmpConfigFile,
+            ],
             $options
         );
 
@@ -66,14 +70,37 @@ class Command
         }
     }
 
+    /**
+     * Returns the output string of the last command executed.
+     *
+     * @return string
+     */
+    public function getOutput()
+    {
+        return $this->lastOutput;
+    }
+
+    /**
+     * Returns the result status code of the last command executed.
+     *
+     * @return int
+     */
     public function getResult()
     {
         return $this->lastResult;
     }
 
-    public function getOutput()
+    /**
+     * Get the prwoject name based on current path and config name.
+     *
+     * @param string $configName the name of the configuration to use.
+     *
+     * @return array
+     */
+    protected function getProjectName($configName)
     {
-        return $this->lastCommandOutput;
+        $currentDirName = dirname(getcwd());
+        return sprintf('%s.%s', $currentDirName, $configName);
     }
 
     /**
@@ -89,7 +116,7 @@ class Command
 
         exec($command . ' 2>&1', $out, $result);
 
-        $this->lastCommandOutput = implode(PHP_EOL, $out);
-        $this->lastResult = $result;
+        $this->lastOutput = implode(PHP_EOL, $out);
+        $this->lastResult = (int)$result;
     }
 }
