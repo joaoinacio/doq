@@ -17,7 +17,6 @@ class StartCommandTest extends ComposeCommandTest
         $this->command = $this->getCommand(self::COMMAND_NAME);
     }
 
-
     /**
      * Test that app command is of the correct class
      */
@@ -33,7 +32,6 @@ class StartCommandTest extends ComposeCommandTest
     {
         // replace doq\Compose\Command with mock object
         $mockCommand = $this->getMockComposeCommand($this->command);
-        $this->app->add($mockCommand);
 
         $tester = new CommandTester($mockCommand);
         $tester->execute([
@@ -50,7 +48,6 @@ class StartCommandTest extends ComposeCommandTest
     {
         // replace doq\Compose\Command with mock object
         $mockCommand = $this->getMockComposeCommand($this->command);
-        $this->app->add($mockCommand);
 
         $tester = new CommandTester($mockCommand);
         $tester->execute([

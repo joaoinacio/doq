@@ -36,7 +36,7 @@ abstract class ComposeCommandTest extends BaseCommandTest
             ->will($this->returnValue($mockComposeCommand));
 
         // replace the command on application
-        //$this->app->add($command);
+        $this->app->add($mockCommand);
         return $mockCommand;
     }
 }
