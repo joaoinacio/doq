@@ -39,22 +39,22 @@ class StartCommandTest extends PHPUnit_Framework_TestCase
     public function testExecuteStartCommand()
     {
         // Create a stub for the DockerCompose class.
-        $doqDockerComposeMock = $this
-            ->getMockBuilder('doq\DockerCompose')
+        $mockComposeCommand = $this
+            ->getMockBuilder('doq\Compose\Command')
             ->setMethods(['exec'])
             ->getMock();
-        $doqDockerComposeMock
+        $mockComposeCommand
             ->expects($this->any())
             ->method('exec');
 
         // have the command use the mocked instance
         $command = $this
             ->getMockBuilder('doq\Command\StartCommand')
-            ->setMethods(['getDockerCompose'])
+            ->setMethods(['getDockerComposeCommand'])
             ->getMock();
         $command->expects($this->once())
-            ->method('getDockerCompose')
-            ->will($this->returnValue($doqDockerComposeMock));
+            ->method('getDockerComposeCommand')
+            ->will($this->returnValue($mockComposeCommand));
 
         // replace the command on application
         $this->app->add($command);
@@ -75,22 +75,22 @@ class StartCommandTest extends PHPUnit_Framework_TestCase
     public function testErrorIfNoConfigFile()
     {
         // Create a stub for the DockerCompose class.
-        $doqDockerComposeMock = $this
-            ->getMockBuilder('doq\DockerCompose')
-            ->setMethods(['exec', 'assertConfigFileExists'])
+        $mockComposeCommand = $this
+            ->getMockBuilder('doq\Compose\Command')
+            ->setMethods(['exec'])
             ->getMock();
-        $doqDockerComposeMock
+        $mockComposeCommand
             ->expects($this->any())
             ->method('exec');
 
         // have the command use the mocked instance
         $command = $this
             ->getMockBuilder('doq\Command\StartCommand')
-            ->setMethods(['getDockerCompose'])
+            ->setMethods(['getDockerComposeCommand'])
             ->getMock();
         $command->expects($this->once())
-            ->method('getDockerCompose')
-            ->will($this->returnValue($doqDockerComposeMock));
+            ->method('getDockerComposeCommand')
+            ->will($this->returnValue($mockComposeCommand));
 
         // replace the command on application
         $this->app->add($command);
@@ -103,7 +103,6 @@ class StartCommandTest extends PHPUnit_Framework_TestCase
             '--config' => 'nonexistant'
         ]);
 
-        $this->assertRegexp('/Error/', $tester->getDisplay() );
+        $this->assertRegexp('/Error/', $tester->getDisplay());
     }
-
 }
