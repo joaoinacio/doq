@@ -26,19 +26,18 @@ class ConfigAwareComposeCommand extends ComposeCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ( $result = parent::execute($input, $output) != 0 ) {
+        if ($result = parent::execute($input, $output) != 0) {
             return $result;
         }
 
-        //$output->write('<info>Loading configuration...</info> ', OutputInterface::VERBOSITY_VERY_VERBOSE);
+        $output->write('<info>Loading configuration...</info> ', OutputInterface::VERBOSITY_VERY_VERBOSE);
         $this->configuration = new Configuration($input->getOption('config'));
 
         try {
             $this->dockerCompose->setConfiguration($this->configuration);
         } catch (ConfigNotFoundException $e) {
-            $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage() );
+            $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
             return 1;
         }
     }
-
 }

@@ -1,105 +1,60 @@
 <?php
 
-namespace Tests\doq\Command\StartCommandTest;
+namespace Tests\doq\Command;
 
-use PHPUnit_Framework_TestCase;
+use Tests\doq\Command\ComposeCommandTest;
 use Symfony\Component\Console\Tester\CommandTester;
 use doq\Application;
 use doq\Command\StartCommand;
 
-class StartCommandTest extends PHPUnit_Framework_TestCase
+class StartCommandTest extends ComposeCommandTest
 {
+    const COMMAND_NAME = 'start';
 
     public function setUp()
     {
-        $this->app = new Application();
-    }
-
-    protected function getCommand($name)
-    {
-        try {
-            $command = $this->app->get($name);
-        } catch (\Exception $e) {
-            $this->fail($e->getMessage());
-        }
-
-        return $command;
+        parent::setUp();
+        $this->command = $this->getCommand(self::COMMAND_NAME);
     }
 
 
-    public function testCommandExists()
+    /**
+     * Test that app command is of the correct class
+     */
+    public function testCommandIsValid()
     {
-        $command = $this->getCommand('start');
-        $this->assertInstanceOf('doq\Command\StartCommand', $command);
+        $this->assertInstanceOf('doq\Command\StartCommand', $this->command);
     }
 
     /**
-     * @depends testCommandExists
+     * Test that issuing the start command will attempt to start the service containers.
      */
     public function testExecuteStartCommand()
     {
-        // Create a stub for the DockerCompose class.
-        $mockComposeCommand = $this
-            ->getMockBuilder('doq\Compose\Command')
-            ->setMethods(['exec'])
-            ->getMock();
-        $mockComposeCommand
-            ->expects($this->any())
-            ->method('exec');
+        // replace doq\Compose\Command with mock object
+        $mockCommand = $this->getMockComposeCommand($this->command);
+        $this->app->add($mockCommand);
 
-        // have the command use the mocked instance
-        $command = $this
-            ->getMockBuilder('doq\Command\StartCommand')
-            ->setMethods(['getDockerComposeCommand'])
-            ->getMock();
-        $command->expects($this->once())
-            ->method('getDockerComposeCommand')
-            ->will($this->returnValue($mockComposeCommand));
-
-        // replace the command on application
-        $this->app->add($command);
-
-        $command = $this->getCommand('start');
-
-        $tester = new CommandTester($command);
-        $tester->execute(
-            ['command'      => $command->getName()]
-        );
+        $tester = new CommandTester($mockCommand);
+        $tester->execute([
+            'command' => $mockCommand->getName()
+        ]);
 
         $this->assertRegexp('/Starting docker service containers.../', $tester->getDisplay());
     }
 
     /**
-     * @depends testCommandExists
+     * Test that an error will be shown if no config file exists.
      */
     public function testErrorIfNoConfigFile()
     {
-        // Create a stub for the DockerCompose class.
-        $mockComposeCommand = $this
-            ->getMockBuilder('doq\Compose\Command')
-            ->setMethods(['exec'])
-            ->getMock();
-        $mockComposeCommand
-            ->expects($this->any())
-            ->method('exec');
+        // replace doq\Compose\Command with mock object
+        $mockCommand = $this->getMockComposeCommand($this->command);
+        $this->app->add($mockCommand);
 
-        // have the command use the mocked instance
-        $command = $this
-            ->getMockBuilder('doq\Command\StartCommand')
-            ->setMethods(['getDockerComposeCommand'])
-            ->getMock();
-        $command->expects($this->once())
-            ->method('getDockerComposeCommand')
-            ->will($this->returnValue($mockComposeCommand));
-
-        // replace the command on application
-        $this->app->add($command);
-
-        $command = $this->getCommand('start');
-
-        $tester = new CommandTester($command);
+        $tester = new CommandTester($mockCommand);
         $tester->execute([
-            'command' => $command->getName(),
+            'command' => $mockCommand->getName(),
             '--config' => 'nonexistant'
         ]);
 

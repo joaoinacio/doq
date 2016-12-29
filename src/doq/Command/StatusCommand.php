@@ -25,7 +25,7 @@ class StatusCommand extends ConfigAwareComposeCommand
         try {
             $this->dockerCompose->execute('ps');
 
-            $output->writeln(PHP_EOL . $this->dockerCompose->getOutput() );
+            $output->writeln(PHP_EOL . $this->dockerCompose->getOutput());
         } catch (\Exception $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> Failed to get status from docker-compose');
         }

@@ -27,7 +27,7 @@ class StartCommand extends ConfigAwareComposeCommand
         try {
             $this->dockerCompose->execute('up -d');
 
-            $output->writeln(PHP_EOL . $this->dockerCompose->getOutput(), OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln($this->dockerCompose->getOutput(), OutputInterface::VERBOSITY_VERBOSE);
             $output->writeln('<info>Done.</info>');
         } catch (\Exception $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> Failed to bring up the containers using docker-compose');

@@ -20,5 +20,4 @@ class ComposeCommand extends BaseCommand
     {
         $this->dockerCompose = $this->getDockerComposeCommand();
     }
-
 }

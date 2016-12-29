@@ -24,7 +24,8 @@ class InitCommand extends Command
                 'default'
             )
             ->addOption(
-                'template', 't',
+                'template',
+                't',
                 InputOption::VALUE_OPTIONAL,
                 'Template (name, path or url) to use for configuration',
                 null
@@ -57,8 +58,7 @@ class InitCommand extends Command
 
             $output->writeln('<info>Done.</info>');
         } catch (ConfigExistsException $e) {
-            $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage() );
+            $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
         }
-
     }
 }
