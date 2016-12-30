@@ -13,6 +13,11 @@ class Configuration
     protected $configName;
     protected $configFile;
 
+    /**
+     * Constructor
+     *
+     * @param string $configName the configuration name to use
+     */
     public function __construct($configName)
     {
         $this->configName = $configName;
@@ -21,17 +26,29 @@ class Configuration
 
     /**
      * Takes a configuration name and returns the local path to the file.
+     *
+     * @return string
      */
     protected function getConfigFilePath()
     {
         return sprintf('%s/%s.yml', self::COMPOSE_FOLDER, $this->configName);
     }
 
+    /**
+     * Return the name of the current configuration
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->configName;
     }
 
+    /**
+     * Return the path of the current configuration file
+     *
+     * @return string
+     */
     public function getFile()
     {
         return $this->configFile;
@@ -54,9 +71,7 @@ class Configuration
     }
 
     /**
-     * Test if a config file exists, throw exception if it does not.
-     *
-     * @param $configName
+     * Test if the file for the current configuration exists, throw exception if it does not.
      *
      * @throws doq\Exception\ConfigNotFoundException
      */
@@ -68,7 +83,7 @@ class Configuration
     }
 
     /**
-     * Test if a config file does not exist, throw exception if it does.
+     * Test if the file for the current configuration exists, throw exception if it does.
      *
      * @param $configName
      *
