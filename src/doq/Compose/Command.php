@@ -39,8 +39,9 @@ class Command
     /**
      * Execute a command in docker-compose, using a configuration file and name.
      *
-     * @param string $configName the name of the configuration to use.
      * @param string $command the command to execute with docker-compose
+     * @param string $options optional options array
+     * @param string $args    optional arguments array
      *
      * @throws doq\Exception\ConfigNotFoundException
      */

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="custom-cs">
+<description>PHPCS custom ruleset based on PSR2</description>
+    <!-- https://github.com/squizlabs/PHP_CodeSniffer/blob/master/CodeSniffer/Standards/PSR2/ruleset.xml -->
+    <rule ref="PSR2"/>
+
+    <!-- There must be only on statement per line. -->
+    <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
+
+    <!-- Disallows usage of call-time pass-by-reference.
+        See: http://php.net/manual/en/language.references.pass.php -->
+    <rule ref="Generic.Functions.CallTimePassByReference"/>
+
+    <!-- Defines a maximum $nestingLevel and $absoluteNestingLevel for functions. -->
+    <rule ref="Generic.Metrics.NestingLevel">
+        <properties>
+            <property name="nestingLevel" value="4"/>
+        </properties>
+    </rule>
+
+    <!-- Disallows usage of PHP 4 style constructors -->
+    <rule ref="Generic.NamingConventions.ConstructorName"/>
+
+    <!-- Checks that control structures are structured correctly and their content is indented correctly.
+        This sniff will throw errors if tabs are used for indentation rather than spaces.-->
+    <rule ref="Generic.WhiteSpace.ScopeIndent"/>
+
+    <!-- Enforces function comments and their format.  -->
+    <rule ref="PEAR.Commenting.FunctionComment"/>
+
+    <!-- Checks that no perl-style comments (#) are used. -->
+    <rule ref="PEAR.Commenting.InlineComment"/>
+</ruleset>

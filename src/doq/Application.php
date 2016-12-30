@@ -9,9 +9,12 @@ use doq\Command;
  */
 class Application extends BaseApp
 {
-    const NAME = 'doq - docker-compose service configuration manager';
+    const NAME    = 'doq - docker-compose service configuration manager';
     const VERSION = '1.0';
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct(static::NAME, static::VERSION);

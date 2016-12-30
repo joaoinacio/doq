@@ -8,6 +8,6 @@ before_script:
   - composer install
 
 script:
-  - ./vendor/bin/phpmd src/,bin/,tests/ text cleancode,codesize,controversial,design,naming
-  - ./vendor/bin/phpcs --standard=PSR2 src/ bin/ tests/
+#  - ./vendor/bin/phpmd src/,bin/,tests/ text cleancode,codesize,controversial,design,naming
+#  - ./vendor/bin/phpcs src/ bin/ tests/
   - ./vendor/bin/phpunit
