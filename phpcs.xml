@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="custom-cs">
 <description>PHPCS custom ruleset based on PSR2</description>
+
     <!-- https://github.com/squizlabs/PHP_CodeSniffer/blob/master/CodeSniffer/Standards/PSR2/ruleset.xml -->
     <rule ref="PSR2"/>
+
+    <!-- force lineLimit to 120 -->
+    <rule ref="Generic.Files.LineLength">
+     <properties>
+      <property name="lineLimit" value="120"/>
+      <property name="absoluteLineLimit" value="0"/>
+     </properties>
+    </rule>
 
     <!-- There must be only on statement per line. -->
     <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
