@@ -15,9 +15,4 @@ class ComposeCommand extends BaseCommand
     {
         return new Command();
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $this->dockerCompose = $this->getDockerComposeCommand();
-    }
 }

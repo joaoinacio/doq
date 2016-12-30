@@ -26,12 +26,10 @@ class ConfigAwareComposeCommand extends ComposeCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($result = parent::execute($input, $output) != 0) {
-            return $result;
-        }
-
         $output->write('<info>Loading configuration...</info> ', OutputInterface::VERBOSITY_VERY_VERBOSE);
         $this->configuration = new Configuration($input->getOption('config'));
+
+        $this->dockerCompose = $this->getDockerComposeCommand();
 
         try {
             $this->dockerCompose->setConfiguration($this->configuration);

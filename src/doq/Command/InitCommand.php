@@ -7,7 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use doq\DockerCompose;
+use doq\Compose\Configuration;
+use doq\Compose\Template;
 use doq\Exception\ConfigExistsException;
 
 class InitCommand extends Command
@@ -27,7 +28,7 @@ class InitCommand extends Command
                 'template',
                 't',
                 InputOption::VALUE_OPTIONAL,
-                'Template (name, path or url) to use for configuration',
+                'Template source (name, path or url) to use for configuration',
                 null
             )
         ;
@@ -38,23 +39,14 @@ class InitCommand extends Command
         $output->writeln('<info>Initializing new docker-compose config environment...</info> ');
 
         try {
-            $configName = $input->getArgument('config');
-            $template = $input->getOption('template');
+            $config = new Configuration($input->getArgument('config'));
+            $template = new Template();
 
-            $filePath = getcwd() . DIRECTORY_SEPARATOR . $template;
-            $urlPattern = '@^(https?|ftp)://[^\s/$.?#].[^\s]*$@iS';
+            $source = $template->detectConfigSource($input->getOption('template'));
 
-            // if (is_file($filePath)) {
-            //     // local file
-            //     echo "template is a local file and it exits";
-            // } elseif (preg_match($urlPattern, $template, $match)) {
-            //     echo "template is an url";
-            // } elseif ( 1 ) {
-            //     // try to get extension and match if it is a (non-existant) file
-            // } else {
-            //     // not file or url, validate as a possible template name
-            // }
-
+            // TODO
+            var_dump($source);
+            var_dump($config->getFileName());
 
             $output->writeln('<info>Done.</info>');
         } catch (ConfigExistsException $e) {
