@@ -40,16 +40,13 @@ class InitCommand extends Command
 
         try {
             $config = new Configuration($input->getArgument('config'));
-            $template = new Template();
-
-            $source = $template->detectConfigSource($input->getOption('template'));
-
-            // TODO
-            var_dump($source);
-            var_dump($config->getFileName());
+            $template = new Template($input->getOption('template'));
+            $config->createFromTemplate($template);
 
             $output->writeln('<info>Done.</info>');
         } catch (ConfigExistsException $e) {
+            $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
+        } catch (Exception $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
         }
     }

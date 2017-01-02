@@ -69,7 +69,7 @@ doq implements commands for managing configuration, templates and services, as w
    Setup a new environment configuration, optionally using a pre-existing template.
 
    `configuration` name defaults to `'default'` if not specified.
-   If no configuration template is specified, it will check if a template with the same name as the configuration exists under `~/.docker-compose/`.
+   If no configuration template is specified, a blank/empty configuration file will be used.
 
 #### Handling of docker-compose configuration templates:
 

@@ -2,6 +2,7 @@
 
 namespace doq\Compose;
 
+use doq\Compose\Template;
 use Exception;
 use doq\Exception\ConfigNotFoundException;
 use doq\Exception\ConfigExistsException;
@@ -22,6 +23,18 @@ class Configuration
     {
         $this->configName = $configName;
         $this->configFile = $this->getConfigFilePath();
+    }
+
+    public function createFromTemplate(Template $template)
+    {
+        // in order to create a new config, it must not already exist
+        $this->assertFileDoesNotExist();
+
+        $fileContents = $template->fetchFromSource();
+        $configFilePath = $this->getConfigFilePath();
+        if (!file_put_contents($configFilePath, $fileContents)) {
+            throw new Exception(sprintf("Could not write template contents to '%s'", $configFilePath));
+        }
     }
 
     /**
