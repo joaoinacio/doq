@@ -60,16 +60,23 @@ class Template
 
     protected function checkTemplatesDirectory()
     {
-        $realPath = realpath(self::TEMPLATE_FOLDER);
-        if (is_dir($realPath)) {
+        list($base, $dir) = explode('/', self::TEMPLATE_FOLDER, 2);
+        if ($base == '~') {
+            $base = getenv('HOME');
+        }
+        $realPath = realpath($base) . DIRECTORY_SEPARATOR . $dir;
+
+        if (realpath($realPath) !== false) {
+            if (is_dir($realPath)) {
+                return;
+            }
+        }
+
+        if (mkdir($realPath)) {
             return;
         }
 
-        if (mkdir($realPath) === true) {
-            return;
-        }
-
-        throw new Exception(sprintf("Could not create directory '%s'", $realPath));
+        throw new Exception(sprintf("Could not create directory '%s'", self::TEMPLATE_FOLDER));
     }
 
     /**
