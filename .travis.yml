@@ -6,7 +6,8 @@ php:
 
 before_script:
   - composer install
+  - wget https://scrutinizer-ci.com/ocular.phar
 
 script:
-  - ./vendor/bin/phpunit --coverage-xml=build/coverage-xml
-  - ./vendor/bin/codacycoverage phpunit
+  - ./vendor/bin/phpunit --coverage-clover=coverage.clover
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
