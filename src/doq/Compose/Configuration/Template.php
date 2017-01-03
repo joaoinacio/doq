@@ -1,10 +1,10 @@
 <?php
 
-namespace doq\Compose;
+namespace doq\Compose\Configuration;
 
 use Exception;
 
-class Template
+class Template extends File
 {
     const TEMPLATE_FOLDER = '~/.docker-compose/';
 
@@ -24,7 +24,14 @@ class Template
     public function __construct($source)
     {
         $this->source = $source;
+
+        // ensure the local templates folder exists or can be created.
         $this->checkTemplatesDirectory();
+
+        // if source is template name, initialize with file path.
+        if ($this->detectConfigSource() == self::CONF_SOURCE_NAME) {
+            parent::__construct($this->getConfigFilePath($source));
+        }
     }
 
     public function fetchContents()

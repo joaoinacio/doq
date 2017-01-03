@@ -2,17 +2,15 @@
 
 namespace doq\Compose;
 
-use doq\Compose\Template;
+use doq\Compose\Configuration\File;
+use doq\Compose\Configuration\Template;
+use doq\Compose\Configuration\Exception\ConfigNotFoundException;
+use doq\Compose\Configuration\Exception\ConfigExistsException;
 use Exception;
-use doq\Exception\ConfigNotFoundException;
-use doq\Exception\ConfigExistsException;
 
-class Configuration
+class Configuration extends File
 {
     const COMPOSE_FOLDER = '.docker-compose';
-
-    protected $configName;
-    protected $configFile;
 
     /**
      * Constructor
@@ -21,8 +19,7 @@ class Configuration
      */
     public function __construct($configName)
     {
-        $this->configName = $configName;
-        $this->configFile = $this->getConfigFilePath();
+        parent::__construct($this->getConfigFilePath($configName));
     }
 
     public function createFromTemplate(Template $template)
@@ -31,7 +28,7 @@ class Configuration
         $this->assertFileDoesNotExist();
 
         $fileContents = $template->fetchFromSource();
-        $configFilePath = $this->getConfigFilePath();
+        $configFilePath = $this->getFilePath();
         if (!file_put_contents($configFilePath, $fileContents)) {
             throw new Exception(sprintf("Could not write template contents to '%s'", $configFilePath));
         }
@@ -42,29 +39,9 @@ class Configuration
      *
      * @return string
      */
-    protected function getConfigFilePath()
+    protected function getConfigFilePath($configName)
     {
-        return sprintf('%s/%s.yml', self::COMPOSE_FOLDER, $this->configName);
-    }
-
-    /**
-     * Return the name of the current configuration
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->configName;
-    }
-
-    /**
-     * Return the path of the current configuration file
-     *
-     * @return string
-     */
-    public function getFile()
-    {
-        return $this->configFile;
+        return sprintf('%s/%s.yml', self::COMPOSE_FOLDER, $configName);
     }
 
     /**
@@ -77,7 +54,7 @@ class Configuration
         $this->assertFileExists();
 
         $tmpConfigFile = tempnam(getcwd(), 'compose-');
-        if (!copy($this->getFile(), $tmpConfigFile)) {
+        if (!copy($this->getFilePath(), $tmpConfigFile)) {
             throw new Exception('Could not create temporary compose file in current directory.');
         }
         return $tmpConfigFile;
@@ -90,8 +67,8 @@ class Configuration
      */
     public function assertFileExists()
     {
-        if (!file_exists($this->configFile)) {
-            throw new ConfigNotFoundException($this->configFile);
+        if (!$this->exists()) {
+            throw new ConfigNotFoundException($this->getFilePath(false));
         }
     }
 
@@ -104,8 +81,8 @@ class Configuration
      */
     public function assertFileDoesNotExist()
     {
-        if (file_exists($this->configFile)) {
-            throw new ConfigExistsException($this->configFile);
+        if ($this->exists()) {
+            throw new ConfigExistsException($this->getFilePath(false));
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Tests\doq\Compose;
 use PHPUnit_Framework_TestCase;
 use doq\Compose\Configuration;
 use Exception;
-use doq\Exception\ConfigNotFoundException;
-use doq\Exception\ConfigExistsException;
+use doq\Compose\Configuration\Exception\ConfigNotFoundException;
+use doq\Compose\Configuration\Exception\ConfigExistsException;
 
 class ConfigurationTest extends PHPUnit_Framework_TestCase
 {

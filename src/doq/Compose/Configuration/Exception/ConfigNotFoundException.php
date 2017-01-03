@@ -1,6 +1,6 @@
 <?php
 
-namespace doq\Exception;
+namespace doq\Compose\Configuration\Exception;
 
 use Exception;
 

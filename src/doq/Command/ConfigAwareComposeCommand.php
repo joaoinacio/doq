@@ -19,7 +19,7 @@ class ConfigAwareComposeCommand extends ComposeCommand
             'config',
             'c',
             InputOption::VALUE_OPTIONAL,
-            'The name of the environment to use',
+            'The name of the configuration environment to use',
             'default'
         );
     }

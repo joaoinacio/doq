@@ -25,5 +25,6 @@ class Application extends BaseApp
         $this->add(new Command\StatusCommand());
         $this->add(new Command\LogsCommand());
         $this->add(new Command\DestroyCommand());
+        $this->add(new Command\ServiceListCommand());
     }
 }
