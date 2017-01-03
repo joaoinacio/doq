@@ -20,6 +20,8 @@ class Template extends File
 
     /**
      * Constructor
+     *
+     * @param string $source - the origin of the template (name/path/url)
      */
     public function __construct($source)
     {
@@ -34,6 +36,11 @@ class Template extends File
         }
     }
 
+    /**
+     * Fetch template contents from given source and return as string
+     *
+     * @return string
+     */
     public function fetchContents()
     {
         switch ($this->detectConfigSource()) {
@@ -46,7 +53,7 @@ class Template extends File
             case self::CONF_SOURCE_URL:
                 return file_get_contents($this->source);
         }
-        // TODO: throw exception?
+        // throw exception?
     }
 
     public function detectConfigSource()
@@ -62,7 +69,7 @@ class Template extends File
         }
 
         // non existing file?
-        // TODO: throw exception
+        // throw exception ?
     }
 
     protected function checkTemplatesDirectory()

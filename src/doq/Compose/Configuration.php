@@ -22,12 +22,17 @@ class Configuration extends File
         parent::__construct($this->getConfigFilePath($configName));
     }
 
+    /**
+     * Create a configuration file from template
+     *
+     * @param \doq\Compose\Configuration\Template $template
+     */
     public function createFromTemplate(Template $template)
     {
         // in order to create a new config, it must not already exist
         $this->assertFileDoesNotExist();
 
-        $fileContents = $template->fetchFromSource();
+        $fileContents = $template->fetchContents();
         $configFilePath = $this->getFilePath();
         if (!file_put_contents($configFilePath, $fileContents)) {
             throw new Exception(sprintf("Could not write template contents to '%s'", $configFilePath));
@@ -36,6 +41,8 @@ class Configuration extends File
 
     /**
      * Takes a configuration name and returns the local path to the file.
+     *
+     * @param string $configName configuration name
      *
      * @return string
      */

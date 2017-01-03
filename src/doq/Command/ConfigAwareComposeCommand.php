@@ -7,11 +7,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use doq\Command\ComposeCommand;
 use doq\Compose\Configuration;
-use doq\Exception\ConfigNotFoundException;
+use doq\Compose\Configuration\Exception\ConfigNotFoundException;
 
 class ConfigAwareComposeCommand extends ComposeCommand
 {
-    protected $dockerCompose;
+    /**
+     * @var \doq\Compose\Configuration;
+     */
+    protected $configuration;
 
     protected function configure()
     {
@@ -24,18 +27,29 @@ class ConfigAwareComposeCommand extends ComposeCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * Prepare configuration-aware docker-compose command.
+     *
+     * @param InputInterface  $input  console input
+     * @param OutputInterface $output console output
+     *
+     * @return int
+     */
+    protected function useComposeConfiguration(InputInterface $input, OutputInterface $output)
     {
         $output->write('<info>Loading configuration...</info> ', OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         $this->configuration = new Configuration($input->getOption('config'));
 
-        $this->dockerCompose = $this->getDockerComposeCommand();
-
         try {
+            $this->configuration->assertFileExists();
+            $this->dockerCompose = $this->getDockerComposeCommand();
             $this->dockerCompose->setConfiguration($this->configuration);
+            return 0;
         } catch (ConfigNotFoundException $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
             return 1;
         }
     }
+
 }

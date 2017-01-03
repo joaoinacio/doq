@@ -7,9 +7,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use doq\Compose\Configuration;
 use doq\Compose\Template;
-use doq\Exception\ConfigExistsException;
+use doq\Compose\Configuration;
+use doq\Compose\Configuration\Exception\ConfigExistsException;
+use doq\Compose\Command\Exception\CommandFailedException;
 
 class InitCommand extends Command
 {
@@ -46,7 +47,7 @@ class InitCommand extends Command
             $output->writeln('<info>Done.</info>');
         } catch (ConfigExistsException $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
-        } catch (Exception $e) {
+        } catch (CommandFailedException $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> ' . $e->getMessage());
         }
     }

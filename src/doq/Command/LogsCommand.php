@@ -5,8 +5,8 @@ namespace doq\Command;
 use doq\Command\ConfigAwareComposeCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use doq\Compose\Command\Exception\CommandFailedException;
 
 class LogsCommand extends ConfigAwareComposeCommand
 {
@@ -26,7 +26,7 @@ class LogsCommand extends ConfigAwareComposeCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($result = parent::execute($input, $output) != 0) {
+        if (($result = $this->useComposeConfiguration($input, $output)) !== 0) {
             return $result;
         }
 
@@ -34,7 +34,7 @@ class LogsCommand extends ConfigAwareComposeCommand
             $this->dockerCompose->execute('logs', [], [$input->getArgument('service')]);
 
             $output->writeln(PHP_EOL . $this->dockerCompose->getOutput());
-        } catch (\Exception $e) {
+        } catch (CommandFailedException $e) {
             $output->writeln(PHP_EOL . '<error>Error:</error> Failed to get status from docker-compose');
         }
 

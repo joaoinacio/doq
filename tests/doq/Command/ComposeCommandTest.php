@@ -15,7 +15,7 @@ abstract class ComposeCommandTest extends BaseCommandTest
      *
      * @param doq\Command\ComposeCommand $command
      */
-    public function getMockComposeCommand($command)
+    public function getMockCommand($command)
     {
         // Create a stub for the DockerCompose class.
         $mockComposeCommand = $this
@@ -31,7 +31,7 @@ abstract class ComposeCommandTest extends BaseCommandTest
             ->getMockBuilder(get_class($command))
             ->setMethods(['getDockerComposeCommand'])
             ->getMock();
-        $mockCommand->expects($this->once())
+        $mockCommand->expects($this->any())
             ->method('getDockerComposeCommand')
             ->will($this->returnValue($mockComposeCommand));
 

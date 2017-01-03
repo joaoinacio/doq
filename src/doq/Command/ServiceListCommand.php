@@ -3,16 +3,11 @@
 namespace doq\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use doq\Compose\Configuration;
 use doq\Compose\Configuration\Services;
-use doq\Compose\ConfigServices;
-use doq\Compose\Template;
 use Exception;
-use doq\Exception\ConfigNotFoundException;
 
 class ServiceListCommand extends Command
 {

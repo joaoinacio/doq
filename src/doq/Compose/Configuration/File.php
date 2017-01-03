@@ -43,7 +43,6 @@ class File
 
     public function getContents()
     {
-        // TODO: check
         return file_get_contents($this->filePath);
     }
 

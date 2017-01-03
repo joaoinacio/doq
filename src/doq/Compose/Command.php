@@ -3,8 +3,7 @@
 namespace doq\Compose;
 
 use doq\Compose\Configuration;
-use doq\Exception\ConfigNotFoundException;
-use doq\Exception\ConfigExistsException;
+use doq\Compose\Command\Exception\CommandFailedException;
 use Exception;
 
 class Command
@@ -40,8 +39,8 @@ class Command
      * Execute a command in docker-compose, using a configuration file and name.
      *
      * @param string $command the command to execute with docker-compose
-     * @param string $options optional options array
-     * @param string $args    optional arguments array
+     * @param array $options  optional options array
+     * @param array $args     optional arguments array
      *
      * @throws doq\Exception\ConfigNotFoundException
      */
@@ -56,7 +55,7 @@ class Command
         // merge default options for file and project name with provided $options
         $options = array_merge(
             [
-                '--project-name '. $this->getProjectName($this->config->getName()),
+                '--project-name ' . $this->getProjectName($this->config->getName()),
                 '--file ' . $tmpConfigFile,
             ],
             $options
@@ -67,7 +66,7 @@ class Command
         unlink($tmpConfigFile);
 
         if ($this->getResult() !== 0) {
-            throw new Exception("Command did not finish successfully.");
+            throw new CommandFailedException("Command did not finish successfully.");
         }
     }
 
@@ -96,7 +95,7 @@ class Command
      *
      * @param string $configName the name of the configuration to use.
      *
-     * @return array
+     * @return string
      */
     protected function getProjectName($configName)
     {
@@ -106,6 +105,7 @@ class Command
 
     /**
      * Execute shell command and store result/output.
+     * @param string $command
      */
     protected function exec($command, $options, $args)
     {

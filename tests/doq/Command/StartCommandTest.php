@@ -30,8 +30,7 @@ class StartCommandTest extends ComposeCommandTest
      */
     public function testExecuteStartCommand()
     {
-        // replace doq\Compose\Command with mock object
-        $mockCommand = $this->getMockComposeCommand($this->command);
+        $mockCommand = $this->getMockCommand($this->command);
 
         $tester = new CommandTester($mockCommand);
         $tester->execute([
@@ -46,8 +45,7 @@ class StartCommandTest extends ComposeCommandTest
      */
     public function testErrorIfNoConfigFile()
     {
-        // replace doq\Compose\Command with mock object
-        $mockCommand = $this->getMockComposeCommand($this->command);
+        $mockCommand = $this->getMockCommand($this->command);
 
         $tester = new CommandTester($mockCommand);
         $tester->execute([
