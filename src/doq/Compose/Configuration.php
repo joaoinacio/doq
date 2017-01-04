@@ -19,7 +19,9 @@ class Configuration extends File
      */
     public function __construct($configName)
     {
-        parent::__construct($this->getConfigFilePath($configName));
+        parent::__construct(
+            $this->getConfigFilePath($configName)
+        );
     }
 
     /**

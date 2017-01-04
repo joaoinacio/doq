@@ -8,9 +8,9 @@ class File
 {
     protected $filePath;
 
-    public function __construct($file)
+    public function __construct($filePath)
     {
-        $this->filePath = $file;
+        $this->filePath = $filePath;
     }
 
     /**

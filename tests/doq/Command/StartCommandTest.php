@@ -11,30 +11,46 @@ class StartCommandTest extends ComposeCommandTest
 {
     const COMMAND_NAME = 'start';
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->command = $this->getCommand(self::COMMAND_NAME);
-    }
-
     /**
      * Test that app command is of the correct class
      */
     public function testCommandIsValid()
     {
-        $this->assertInstanceOf('doq\Command\StartCommand', $this->command);
+        $this->assertInstanceOf('doq\Command\StartCommand', $this->app->get(self::COMMAND_NAME) );
     }
 
     /**
      * Test that issuing the start command will attempt to start the service containers.
      */
-    public function testExecuteStartCommand()
+    public function testExecuteStartCommandDefault()
     {
-        $mockCommand = $this->getMockCommand($this->command);
+        $this->mockConfiguration('default');
+        $this->mockComposeCommand();
 
-        $tester = new CommandTester($mockCommand);
+        $command = $this->app->get(self::COMMAND_NAME);
+
+        $tester = new CommandTester($command);
         $tester->execute([
-            'command' => $mockCommand->getName()
+            'command' => $command->getName()
+        ]);
+
+        $this->assertRegexp('/Starting docker service containers.../', $tester->getDisplay());
+    }
+
+    /**
+     * Test that issuing the start command will attempt to start the service containers.
+     */
+    public function testExecuteStartCommandNonDefaultConfig()
+    {
+        $this->mockConfiguration('alternative');
+        $this->mockComposeCommand();
+
+        $command = $this->app->get(self::COMMAND_NAME);
+
+        $tester = new CommandTester($command);
+        $tester->execute([
+            'command' => $command->getName(),
+            '--config' => 'alternative'
         ]);
 
         $this->assertRegexp('/Starting docker service containers.../', $tester->getDisplay());
@@ -45,12 +61,12 @@ class StartCommandTest extends ComposeCommandTest
      */
     public function testErrorIfNoConfigFile()
     {
-        $mockCommand = $this->getMockCommand($this->command);
+        $command = $this->app->get(self::COMMAND_NAME);
 
-        $tester = new CommandTester($mockCommand);
+        $tester = new CommandTester($command);
         $tester->execute([
-            'command' => $mockCommand->getName(),
-            '--config' => 'nonexistant'
+            'command' => $command->getName(),
+            '--config' => 'somefile'
         ]);
 
         $this->assertRegexp('/Error/', $tester->getDisplay());
