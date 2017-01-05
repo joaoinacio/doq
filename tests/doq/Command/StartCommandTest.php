@@ -18,11 +18,30 @@ class StartCommandTest extends ComposeCommandTest
     }
 
     /**
+     * Test that issuing the start command will execute docker-compose up command.
+     */
+    public function testExecuteComposeCommand()
+    {
+        $this->mockConfiguration();
+        $this->mockComposeCommand()
+            ->expects($this->once())
+            ->method('exec')
+            ->with('up -d');
+
+        $command = $this->app->get(self::COMMAND_NAME);
+
+        $tester = new CommandTester($command);
+        $tester->execute([
+            'command' => $command->getName()
+        ]);
+    }
+
+    /**
      * Test that issuing the start command will attempt to start the service containers.
      */
-    public function testExecuteStartCommandDefault()
+    public function testExecuteStartCommandDefaultOutput()
     {
-        $this->mockConfiguration('default');
+        $this->mockConfiguration();
         $this->mockComposeCommand();
 
         $command = $this->app->get(self::COMMAND_NAME);

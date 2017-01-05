@@ -56,6 +56,11 @@ class Template extends File
         // throw exception?
     }
 
+    /**
+     * Detect configuration source
+     *
+     * @return int
+     */
     public function detectConfigSource()
     {
         if ($this->isName($this->source)) {
@@ -72,6 +77,12 @@ class Template extends File
         // throw exception ?
     }
 
+    /**
+     * Verify the existance of the templates directory,
+     *  attempt to create if it does not already exist
+     *
+     * @throws \Exception
+     */
     protected function checkTemplatesDirectory()
     {
         list($base, $dir) = explode('/', self::TEMPLATE_FOLDER, 2);
@@ -96,6 +107,8 @@ class Template extends File
     /**
      * Takes a configuration name and returns the local path to the file.
      *
+     * @param string $name - configuration template name
+     *
      * @return string
      */
     public function getConfigFilePath($name)
@@ -103,6 +116,11 @@ class Template extends File
         return sprintf('%s/%s.yml', self::TEMPLATE_FOLDER, $name);
     }
 
+    /**
+     * Returns the contents for a configuration file with no services.
+     *
+     * @return string
+     */
     public function newEmptyFile()
     {
         // TODO
@@ -113,6 +131,13 @@ services:
 EOF;
     }
 
+    /**
+     * Detect if provided source is a name
+     *
+     * @param string $source - a template source
+     *
+     * @return bool  returns true if source is a name, false otherwise.
+     */
     private function isName($source)
     {
         return preg_match(self::NAME_REGEX_PATTERN, $source);
@@ -121,7 +146,7 @@ EOF;
     /**
      * Detect if provided source is an url.
      *
-     * @param string $source
+     * @param string $source - a template source
      *
      * @return bool  returns true if source is an url, false otherwise.
      */
@@ -134,7 +159,7 @@ EOF;
     /**
      * Detect if provided source is a valid/existing file path.
      *
-     * @param string $source
+     * @param string $source - a template source
      *
      * @return bool  returns true if source is a file, false otherwise.
      */

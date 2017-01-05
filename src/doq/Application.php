@@ -5,6 +5,7 @@ use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Implement Symfony Console application
@@ -58,8 +59,10 @@ class Application extends BaseApp
     {
         $taggedServices = $this->container->findTaggedServiceIds('doq.command');
         foreach (array_keys($taggedServices) as $id) {
-            $this->add($this->container->get($id));
+            $serviceCommand = $this->container->get($id);
+            if ($serviceCommand instanceof Command) {
+                $this->add($serviceCommand);
+            }
         }
     }
-
 }

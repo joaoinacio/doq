@@ -9,7 +9,7 @@ use Exception;
 class Command
 {
     /**
-     * @var doq\Compose\Configuration
+     * @var Configuration
      */
     protected $config;
 
@@ -26,9 +26,9 @@ class Command
     protected $lastOutput;
 
     /**
-     * Set the configuration object for the command to be executed
+     * Set the configuration object for the command to be executed.
      *
-     * @var doq\Compose\Configuration $config
+     * @param Configuration $config - the configuration instance
      */
     public function setConfiguration(Configuration $config)
     {
@@ -39,10 +39,11 @@ class Command
      * Execute a command in docker-compose, using a configuration file and name.
      *
      * @param string $command the command to execute with docker-compose
-     * @param array $options  optional options array
-     * @param array $args     optional arguments array
+     * @param array  $options optional options array
+     * @param array  $args    optional arguments array
      *
      * @throws doq\Exception\ConfigNotFoundException
+     *
      */
     public function execute($command, $options = [], $args = [])
     {
@@ -50,23 +51,24 @@ class Command
             throw new Exception('docker-compose configuration was not provided');
         }
 
-        $tmpConfigFile = $this->config->copyTempFile();
+        $tempConfigFile = $this->config->createTempFile();
 
         // merge default options for file and project name with provided $options
         $options = array_merge(
             [
                 '--project-name ' . $this->getProjectName($this->config->getName()),
-                '--file ' . $tmpConfigFile,
+                '--file ' . $tempConfigFile,
             ],
             $options
         );
 
+        $this->lastResult = 0;
         $this->exec($command, $options, $args);
 
-        unlink($tmpConfigFile);
+        unlink($tempConfigFile);
 
         if ($this->getResult() !== 0) {
-            throw new CommandFailedException("Command did not finish successfully.");
+            throw new CommandFailedException();
         }
     }
 
@@ -105,7 +107,10 @@ class Command
 
     /**
      * Execute shell command and store result/output.
-     * @param string $command
+     *
+     * @param string $command the command to execute in docker-compose
+     * @param array  $options options array
+     * @param array  $args    arguments array
      */
     protected function exec($command, $options, $args)
     {

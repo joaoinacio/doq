@@ -13,6 +13,11 @@ class Configuration extends File
     const COMPOSE_FOLDER = '.docker-compose';
 
     /**
+     * @var string
+     */
+    protected $tempConfigFile;
+
+    /**
      * Constructor
      *
      * @param string $configName the configuration name to use
@@ -27,7 +32,7 @@ class Configuration extends File
     /**
      * Create a configuration file from template
      *
-     * @param \doq\Compose\Configuration\Template $template
+     * @param \doq\Compose\Configuration\Template $template the template to use.
      */
     public function createFromTemplate(Template $template)
     {
@@ -54,19 +59,27 @@ class Configuration extends File
     }
 
     /**
+     * Generate a temporary file name in the current working directory
+     */
+    protected function newTemporaryFileName()
+    {
+        return tempnam(getcwd(), 'compose-');
+    }
+
+    /**
      * Copy source compose config file to temporary file in current directory.
      *
      * @return string the temporary file name
      */
-    public function copyTempFile()
+    public function createTempFile()
     {
         $this->assertFileExists();
 
-        $tmpConfigFile = tempnam(getcwd(), 'compose-');
-        if (!copy($this->getFilePath(), $tmpConfigFile)) {
+        $this->tempConfigFile = $this->newTemporaryFileName();
+        if (!copy($this->getFilePath(), $this->tempConfigFile)) {
             throw new Exception('Could not create temporary compose file in current directory.');
         }
-        return $tmpConfigFile;
+        return $this->tempConfigFile;
     }
 
     /**
@@ -83,8 +96,6 @@ class Configuration extends File
 
     /**
      * Test if the file for the current configuration exists, throw exception if it does.
-     *
-     * @param $configName
      *
      * @throws doq\Exception\ConfigExistsException
      */
