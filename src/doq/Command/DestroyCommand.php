@@ -9,17 +9,9 @@ use doq\Compose\Command\Exception\CommandFailedException;
 
 class DestroyCommand extends ConfigAwareComposeCommand
 {
-    protected function configure()
-    {
-        parent::configure();
-        $this
-            ->setName('destroy')
-            ->setDescription('Stops and removes containers, networks, volumes, and images');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (($result = $this->useComposeConfiguration($input, $output)) !== 0) {
+        if (($result = parent::execute($input, $output)) !== 0) {
             return $result;
         }
 

@@ -9,17 +9,9 @@ use doq\Compose\Command\Exception\CommandFailedException;
 
 class StopCommand extends ConfigAwareComposeCommand
 {
-    protected function configure()
-    {
-        parent::configure();
-        $this
-            ->setName('stop')
-            ->setDescription('Stops all environment services but does not destroy them.');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (($result = $this->useComposeConfiguration($input, $output)) !== 0) {
+        if (($result = parent::execute($input, $output)) !== 0) {
             return $result;
         }
 

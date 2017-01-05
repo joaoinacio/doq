@@ -2,23 +2,20 @@
 
 namespace doq\Command;
 
-use Symfony\Component\Console\Command\Command;
+use doq\Command\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use doq\Compose\Template;
-use doq\Compose\Configuration;
 use doq\Compose\Configuration\Exception\ConfigExistsException;
 use doq\Compose\Command\Exception\CommandFailedException;
 
-class InitCommand extends Command
+class InitCommand extends BaseCommand
 {
     protected function configure()
     {
         $this
-            ->setName('init')
-            ->setDescription('Setup a new environment configuration, optionally using a pre-existing template.')
             ->addArgument(
                 'config',
                 InputArgument::OPTIONAL,
@@ -40,9 +37,13 @@ class InitCommand extends Command
         $output->writeln('<info>Initializing new docker-compose config environment...</info> ');
 
         try {
-            $config = new Configuration($input->getArgument('config'));
-            $template = new Template($input->getOption('template'));
-            $config->createFromTemplate($template);
+            $this->getContainer()->setParameter('configname', $input->getArgument('config'));
+            $this->getContainer()->setParameter('templateSource', $input->getOption('template'));
+
+            $configuration = $this->getContainer()->get('doq.compose.configuration');
+            $template = $this->getContainer()->get('doq.compose.template');
+
+            $configuration->createFromTemplate($template);
 
             $output->writeln('<info>Done.</info>');
         } catch (ConfigExistsException $e) {

@@ -1,0 +1,72 @@
+services:
+
+    doq.compose.configuration:
+        class: doq\Compose\Configuration
+        arguments: ['%configName%']
+
+    doq.compose.template:
+        class: doq\Compose\Configuration\Template
+        arguments: ['%templateSource%']
+
+    doq.compose.command:
+        class: doq\Compose\Command
+        calls:
+           - [ setConfiguration, ['@doq.compose.configuration'] ]
+
+    doq.command.init:
+        class: doq\Command\InitCommand
+        arguments:
+            - init
+        calls:
+            - [setDescription, ['Setup a new environment configuration, optionally using a pre-existing template.']]
+        tags:
+            - { name: doq.command }
+
+    doq.command.start:
+        class: doq\Command\StartCommand
+        arguments:
+            - 'start'
+        calls:
+            - [setDescription, ['Builds, (re)creates and starts service containers using docker-compose']]
+        tags:
+            - { name: doq.command }
+
+    doq.command.stop:
+        class: doq\Command\StopCommand
+        arguments:
+            - 'stop'
+            - 'Stops all running service containers configured in docker-compose.'
+        tags:
+            - { name: doq.command }
+
+    doq.command.status:
+        class: doq\Command\StatusCommand
+        arguments:
+            - 'status'
+            - 'Display execution status of the running containers.'
+        tags:
+            - { name: doq.command }
+
+    doq.command.logs:
+        class: doq\Command\LogsCommand
+        arguments:
+            - 'logs'
+            - 'Display service logs, optionally for a specific container in the configuration.'
+        tags:
+            - { name: doq.command }
+
+    doq.command.logs:
+        class: doq\Command\DestroyCommand
+        arguments:
+            - 'destroy'
+            - 'Stops and removes containers, networks, volumes, and images.'
+        tags:
+            - { name: doq.command }
+
+    doq.command.service_list:
+        class: doq\Command\ServiceListCommand
+        arguments:
+            - 'service:list'
+            - 'Lists the services and basic information defined in the docker compose configuration.'
+        tags:
+            - { name: doq.command }

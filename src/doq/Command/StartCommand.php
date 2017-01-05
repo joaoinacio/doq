@@ -9,17 +9,9 @@ use doq\Compose\Command\Exception\CommandFailedException;
 
 class StartCommand extends ConfigAwareComposeCommand
 {
-    protected function configure()
-    {
-        parent::configure();
-        $this
-            ->setName('start')
-            ->setDescription('Builds, (re)creates and starts service containers using docker-compose.');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (($result = $this->useComposeConfiguration($input, $output)) !== 0) {
+        if (($result = parent::execute($input, $output)) !== 0) {
             return $result;
         }
 
