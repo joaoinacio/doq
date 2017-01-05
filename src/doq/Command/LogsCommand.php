@@ -12,6 +12,7 @@ class LogsCommand extends ConfigAwareComposeCommand
 {
     protected function configure()
     {
+        parent::configure();
         $this->addArgument(
             'service',
             InputArgument::OPTIONAL,

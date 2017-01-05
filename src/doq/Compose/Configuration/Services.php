@@ -10,6 +10,11 @@ class Services extends Configuration
 {
     protected $servicesDefinition;
 
+    /**
+     * Constructor
+     *
+     * @param string $configName configuration to use.
+     */
     public function __construct($configName)
     {
         parent::__construct($configName);
@@ -17,6 +22,9 @@ class Services extends Configuration
         $this->parseConfig();
     }
 
+    /**
+     *  Parse docker-compose configuration file
+     */
     protected function parseConfig()
     {
         $data = Yaml::parse($this->getContents());
@@ -25,8 +33,7 @@ class Services extends Configuration
             throw new Exception('the configuration file does not define a "services" section');
         }
 
-        foreach ($data['services'] as $name => $definition)
-        {
+        foreach ($data['services'] as $name => $definition) {
             $def = [
                 'image' => isset($definition['image']) ? $definition['image'] : '',
                 'ports' =>'',
@@ -49,8 +56,13 @@ class Services extends Configuration
 
             $this->servicesDefinition[$name] = $def;
         }
-
     }
+
+    /**
+     * Return service definition for parsed configuration file
+     *
+     * @return array
+     */
     public function getServicesDefinition()
     {
         return $this->servicesDefinition;

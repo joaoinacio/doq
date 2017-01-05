@@ -8,13 +8,20 @@ class File
 {
     protected $filePath;
 
+    /**
+     * Constructor
+     *
+     * @param string $filePath the path to the file.
+     */
     public function __construct($filePath)
     {
         $this->filePath = $filePath;
     }
 
     /**
-     * Return the name of the current configuration
+     * Return the name of the current configuration.
+     *
+     * @param bool $keepExtension wether to keep extension (default false).
      *
      * @return string
      */
@@ -26,6 +33,8 @@ class File
     /**
      * Return the full path of the configuration file
      *
+     * @param bool $getRealPath wether to return realpath (default false).
+     *
      * @return string
      */
     public function getFilePath($getRealPath = false)
@@ -36,16 +45,31 @@ class File
         return $this->filePath;
     }
 
+    /**
+     * Check if file exists.
+     *
+     * @return bool - true if the file exists, false if not.
+     */
     public function exists()
     {
         return ($this->filePath && file_exists($this->filePath));
     }
 
+    /**
+     * Get the contents of the file.
+     *
+     * @return string file contents.
+     */
     public function getContents()
     {
         return file_get_contents($this->filePath);
     }
 
+    /**
+     * Copy the file to destination path.
+     *
+     * @param string $destFilePath destination
+     */
     public function copyTo($destFilePath)
     {
         if (!copy($this->filePath, $destFilePath)) {

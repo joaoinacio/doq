@@ -52,5 +52,4 @@ class ConfigAwareComposeCommand extends BaseCommand
             return 1;
         }
     }
-
 }
