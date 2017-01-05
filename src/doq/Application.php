@@ -58,7 +58,7 @@ class Application extends BaseApp
     protected function addTaggedCommands()
     {
         $taggedServices = $this->container->findTaggedServiceIds('doq.command');
-        foreach ($taggedServices as $id => $tags) {
+        foreach (array_keys($taggedServices) as $id) {
             $this->add($this->container->get($id));
         }
     }
