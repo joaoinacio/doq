@@ -5,7 +5,6 @@ use Symfony\Component\Console\Application as BaseApp;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
-use doq\Command;
 
 /**
  * Implement Symfony Console application
