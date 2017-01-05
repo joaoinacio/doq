@@ -4,7 +4,6 @@ namespace Tests\doq\Command;
 
 use Tests\doq\Command\ComposeCommandTest;
 use Symfony\Component\Console\Tester\CommandTester;
-use doq\Application;
 
 class StopCommandTest extends ComposeCommandTest
 {
