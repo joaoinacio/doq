@@ -1,6 +1,9 @@
 <?php
+
 namespace doq;
 
+use Phar;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
@@ -12,9 +15,22 @@ class Compiler
     const PHAR_NAME = 'doq.phar';
 
     /**
+     * @var string - root directory
+     */
+    protected $rootDir;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->rootDir = realpath( __DIR__ . '/../../' );
+    }
+
+    /**
      * Compiles app into a single phar file
      *
-     * @param  string            $pharFile The full path to the file to create
+     * @param string $pharFile - The full path to the file to create
      * @throws \RuntimeException
      */
     public function compile($pharFile = self::PHAR_NAME)
@@ -23,50 +39,32 @@ class Compiler
             unlink($pharFile);
         }
 
-        $phar = new \Phar($pharFile, 0, self::PHAR_NAME);
-        $phar->setSignatureAlgorithm(\Phar::SHA1);
+        $phar = new Phar($pharFile, 0, self::PHAR_NAME);
+        $phar->setSignatureAlgorithm(Phar::SHA1);
         $phar->startBuffering();
 
-        // Add source
+        // Add sources
         $finder = new Finder();
         $finder->files()
             ->ignoreVCS(true)
-            ->name('*.php')
-            ->notName('Compiler.php')
-            ->notName('ClassLoader.php')
-            ->in(__DIR__.'/..')
-        ;
+            ->name('*')
+            ->in($this->rootDir . '/src');
+
         foreach ($finder as $file) {
             $this->addFile($phar, $file);
         }
 
-        // Add dependencies
-        $finder = new Finder();
-        $finder->files()
-            ->ignoreVCS(true)
-            ->name('*.php')
-            ->name('LICENSE')
-            ->exclude('Tests')
-            ->exclude('tests')
-            ->exclude('docs')
-            ->in(__DIR__.'/../../vendor/symfony/')
-            ->in(__DIR__.'/../../vendor/psr/')
-        ;
-        foreach ($finder as $file) {
-            $this->addFile($phar, $file);
-        }
+        $this->addDependencies(
+            $phar,
+            [
+                'vendor/symfony',
+                'vendor/psr',
+            ]
+        );
 
-        // Add composer autoloads
-        $finder->files()
-            ->ignoreVCS(true)
-            ->name('*.php')
-            ->in(__DIR__.'/../../vendor/composer/')
-            ;
-        foreach ($finder as $file) {
-            $this->addFile($phar, $file);
-        }
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/autoload.php'));
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/ClassLoader.php'));
+        // add composer autoload
+        $this->addFile($phar, new SplFileInfo($this->rootDir . '/vendor/autoload.php'));
+        $this->addDependencies($phar, ['vendor/composer'] );
 
         // add binary
         $this->addBin($phar);
@@ -78,7 +76,41 @@ class Compiler
         $phar->stopBuffering();
     }
 
-    private function addFile($phar, $file, $strip = true)
+    /**
+     * Add dependencies to phar archive
+     *
+     * @param Phar $phar   archive
+     * @param array $paths paths to add
+     */
+    protected function addDependencies($phar, $paths = [])
+    {
+        foreach ($paths as &$path) {
+            $path = $this->rootDir . '/' . $path;
+        }
+
+        $finder = new Finder();
+        $finder->files()
+            ->ignoreVCS(true)
+            ->name('*.php')
+            ->name('LICENSE')
+            ->exclude('Tests')
+            ->exclude('tests')
+            ->exclude('docs')
+            ->in($paths);
+
+        foreach ($finder as $file) {
+            $this->addFile($phar, $file);
+        }
+    }
+
+    /**
+     * Add file contents to phar archive
+     *
+     * @param Phar        $phar archive
+     * @param SplFileInfo $file file
+     * @param bool        $strip wether to strip whitespace, default true.
+     */
+    private function addFile($phar, SplFileInfo $file, $strip = true)
     {
         $path = strtr(str_replace(dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR, '', $file->getRealPath()), '\\', '/');
         $content = file_get_contents($file);
@@ -90,6 +122,11 @@ class Compiler
         $phar->addFromString($path, $content);
     }
 
+    /**
+     * Add binary entry-point to phar archive
+     *
+     * @param Phar $phar archive
+     */
     private function addBin($phar)
     {
         $content = file_get_contents(__DIR__.'/../../bin/doq');
@@ -97,6 +134,11 @@ class Compiler
         $phar->addFromString('bin/doq', $content);
     }
 
+    /**
+     * Return phar stub contents as string.
+     *
+     * @return string
+     */
     private function getStub()
     {
         return <<<'EOF'
