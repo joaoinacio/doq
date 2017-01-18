@@ -5,28 +5,25 @@ namespace Tests\doq\Command;
 use Tests\doq\Command\ComposeCommandTest;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class LogsCommandTest extends ComposeCommandTest
+class DestroyCommandTest extends ComposeCommandTest
 {
-    const COMMAND_NAME = 'logs';
+    const COMMAND_NAME = 'destroy';
 
     /**
      * Test that app command is of the correct class
      */
     public function testCommandIsValid()
     {
-        $this->assertInstanceOf('doq\Command\LogsCommand', $this->app->get(self::COMMAND_NAME) );
+        $this->assertInstanceOf('doq\Command\DestroyCommand', $this->app->get(self::COMMAND_NAME) );
     }
 
     /**
-     * Test that issuing the 'logs' command will attempt to call docker-compose
+     * Test that issuing the stop command will attempt to stop the service containers.
      */
-    public function testExecuteLogsCommand()
+    public function testExecuteCommandOutput()
     {
         $this->mockConfiguration();
-        $this->mockComposeCommand()
-            ->expects($this->once())
-            ->method('exec')
-            ->with('logs');
+        $this->mockComposeCommand();
 
         $command = $this->app->get(self::COMMAND_NAME);
 
@@ -34,26 +31,26 @@ class LogsCommandTest extends ComposeCommandTest
         $tester->execute([
             'command' => $command->getName()
         ]);
+
+        $this->assertRegexp('/Stopping and removing docker containers.../', $tester->getDisplay());
     }
 
     /**
-     * Test that calling the command with a service parameter will pass
-     * the correct parameters to docker-compose.
+     * Test that issuing the destroy command will execute docker-compose down command.
      */
-    public function testExecuteLogsCommandWithServiceArg()
+    public function testExecuteComposeCommand()
     {
         $this->mockConfiguration();
         $this->mockComposeCommand()
             ->expects($this->once())
             ->method('exec')
-            ->with('logs', $this->anything(), ['test']);
+            ->with('down');
 
         $command = $this->app->get(self::COMMAND_NAME);
 
         $tester = new CommandTester($command);
         $tester->execute([
-            'command' => $command->getName(),
-            'service' => 'test'
+            'command' => $command->getName()
         ]);
     }
 }

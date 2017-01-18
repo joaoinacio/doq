@@ -1,4 +1,4 @@
-# joaoinacio/doq ![Build Status](https://travis-ci.org/joaoinacio/doq.svg?branch=master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/joaoinacio/doq/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/joaoinacio/doq/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/joaoinacio/doq/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/joaoinacio/doq/?branch=master)
+# joaoinacio/doq [![Build Status](https://travis-ci.org/joaoinacio/doq.svg?branch=master)](https://travis-ci.org/joaoinacio/doq) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/joaoinacio/doq/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/joaoinacio/doq/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/joaoinacio/doq/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/joaoinacio/doq/?branch=master)
 
 Quickly setup and use multiple configurations for containerized services using docker compose.
 

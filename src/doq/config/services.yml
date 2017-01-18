@@ -55,7 +55,7 @@ services:
         tags:
             - { name: doq.command }
 
-    doq.command.logs:
+    doq.command.destroy:
         class: doq\Command\DestroyCommand
         arguments:
             - 'destroy'
